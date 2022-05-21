@@ -18,9 +18,9 @@ class Player extends GameObject {
         this.vy = 0;
         // 水平、垂直方向的初始速度 单位为像素/秒
         this.speedx = 400;
-        this.speedy = -1000;
+        this.speedy = -800;
         // 重力加速度
-        this.gravity = 50;
+        this.gravity = 30;
         // 方向
         this.direction = 1;
         // 宽高
@@ -34,6 +34,10 @@ class Player extends GameObject {
         this.ctx = this.root.game_map.ctx;
         // 获取按键
         this.pressed_keys = this.root.game_map.controller.pressed_keys;
+        // 记录状态动作
+        this.animations = new Map();
+        // 记录当前渲染了多少帧
+        this.current_frame_cnt = 0;
     }
 
     start() {
@@ -48,14 +52,16 @@ class Player extends GameObject {
 
     // 初始时从高处跳下
     update_move() {
-        this.vy += this.gravity;
+        if (this.status === 3) {
+            this.vy += this.gravity;
+        }
         
         this.x += this.vx * this.timedelta / 1000;
         this.y += this.vy * this.timedelta / 1000;
         if (this.y > 450) {
             this.y = 450;
             this.vy = 0;
-            this.status = 0;
+            if (this.status === 3) this.status = 0;
         }
         if (this.x < 0) this.x = 0;
         else if (this.x + this.width > this.root.game_map.$canvas.width()) {
@@ -95,6 +101,7 @@ class Player extends GameObject {
                }
                this.vy = this.speedy;
                this.status = 3;
+               //this.current_frame_cnt = 0;
            }
            else if (d) {
                this.vx = this.speedx;
@@ -112,8 +119,24 @@ class Player extends GameObject {
     }
 
     render() {
-        this.ctx.fillStyle = this.color;
-        this.ctx.fillRect(this.x, this.y, this.width, this.height);
+        //this.ctx.fillStyle = this.color;
+        //this.ctx.fillRect(this.x, this.y, this.width, this.height);
+
+        // 先获取当前角色的状态
+        let status = this.status;
+        //console.log(status);
+        // 根据状态找动画
+        let gifObj = this.animations.get(status);
+        if (gifObj && gifObj.loaded) {
+            /* 获取帧数 循环渲染
+            除frame_rate的原因时每秒帧率太快 使其减速
+            */
+            let k = parseInt(this.current_frame_cnt / gifObj.frame_rate) % gifObj.frame_cnt;
+            let image = gifObj.gif.frames[k].image;
+            this.ctx.drawImage(image, this.x, this.y + gifObj.offset_y, image.width * gifObj.scale, image.height * gifObj.scale);
+        }
+        // 继续渲染下一帧
+        this.current_frame_cnt ++;
     }
 }
 

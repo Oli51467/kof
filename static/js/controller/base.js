@@ -1,3 +1,4 @@
+// 获取按键
 class Controller {
     constructor($canvas) {
         this.$canvas = $canvas;
