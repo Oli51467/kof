@@ -134,18 +134,19 @@ class Player extends GameObject {
             除frame_rate的原因时每秒帧率太快 使其减速
             */
             let k;
-            if (this.status === 4) k = this.current_frame_cnt % gifObj.frame_cnt;
-            else k = parseInt(this.current_frame_cnt / gifObj.frame_rate) % gifObj.frame_cnt;
+            /*if (this.status === 4) k = this.current_frame_cnt % gifObj.frame_cnt;
+            else*/ k = parseInt(this.current_frame_cnt / gifObj.frame_rate) % gifObj.frame_cnt;
             let image = gifObj.gif.frames[k].image;
             this.ctx.drawImage(image, this.x, this.y + gifObj.offset_y, image.width * gifObj.scale, image.height * gifObj.scale);
         }
+        
+        // 继续渲染下一帧
+        this.current_frame_cnt ++;
 
         // 攻击时，只渲染一次。当渲染完全部帧时，更新角色状态为静止
         if (this.status === 4 && parseInt(this.current_frame_cnt / gifObj.frame_rate) === gifObj.frame_cnt) {
             this.status = 0;
         }
-        // 继续渲染下一帧
-        this.current_frame_cnt ++;
     }
 }
 
