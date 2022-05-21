@@ -18,9 +18,9 @@ class Player extends GameObject {
         this.vy = 0;
         // 水平、垂直方向的初始速度 单位为像素/秒
         this.speedx = 400;
-        this.speedy = -800;
+        this.speedy = -1000;
         // 重力加速度
-        this.gravity = 40;
+        this.gravity = 50;
         // 方向
         this.direction = 1;
         // 宽高
@@ -106,7 +106,7 @@ class Player extends GameObject {
                }
                this.vy = this.speedy;
                this.status = 3;
-               //this.current_frame_cnt = 0;
+               this.current_frame_cnt = 0;
            }
            else if (d) {
                this.vx = this.speedx;
