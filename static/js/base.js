@@ -11,19 +11,19 @@ class KOF {
         this.players = [
             new Player(this, {
                 id: 0,
-                x: 0,
+                x: 200,
                 y: 0,
-                height: 150,
-                width: 200,
+                height: 200,
+                width: 120,
                 color: 'blue',
             }),
             new Player(this, {
                 id: 1,
-                x: 500,
+                x: 900,
                 y: 0,
-                height: 150,
-                width: 200,
-                color: 'blue',
+                height: 200,
+                width: 120,
+                color: 'green',
             })
         ];
     }

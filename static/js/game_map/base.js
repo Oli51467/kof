@@ -1,4 +1,5 @@
 import { GameObject } from '../game_object/base.js';
+import { Controller } from '../controller/base.js';
 
 class GameMap extends GameObject {
     // 参数root是KOF类 传入root的原因是方便索引地图上每一个元素
@@ -14,6 +15,8 @@ class GameMap extends GameObject {
         this.root.$kof.append(this.$canvas);
         // 获取画布聚焦 使之可以通过键盘操作
         this.$canvas.focus();
+
+        this.controller = new Controller(this.$canvas);
     }
 
     start() {   // 初始时执行一次
@@ -25,9 +28,9 @@ class GameMap extends GameObject {
     }
 
     render() {
-        //this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-        this.ctx.fillStyle = 'black';
-        this.ctx.fillRect(0, 0, this.$canvas.width(), this.$canvas.height());
+        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        //this.ctx.fillStyle = 'black';
+        //this.ctx.fillRect(0, 0, this.$canvas.width(), this.$canvas.height());
     }
 }
 
