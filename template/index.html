@@ -6,13 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>拳皇</title>
     <link rel="stylesheet" href="/static/css/base.css">
-
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <style>
+        #kof {
+            background-image: url('/static/images/background/0.gif');
+        }
+    </style>
 </head>
 <body>
     <div id="kof"></div>
 
     <script type="module">
-        import {KOF} from "/static/js/base";
+        import { KOF } from '/static/js/base.js';
 
         let kof = new KOF('kof');
     </script>

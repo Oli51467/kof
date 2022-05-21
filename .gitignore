@@ -1,0 +1,6 @@
+##ignore thess files##
+/node_modules
+/.idea
+/.git
+package.json
+package-lock.json
