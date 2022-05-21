@@ -1,4 +1,3 @@
-
 let GAME_OBJECT = [];
 
 class GameObject {

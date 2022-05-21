@@ -2,5 +2,6 @@
     width: 1280px;
     height: 720px;
     background-size: 200% 100%;
+    background-image: url('/static/images/background/0.gif');
     background-position: top;
 }
