@@ -13,9 +13,7 @@ class GameMap extends GameObject {
         this.ctx = this.$canvas[0].getContext('2d');
         // 在div上添加画布
         this.root.$kof.append(this.$canvas);
-        // 获取画布聚焦 使之可以通过键盘操作
-        this.$canvas.focus();
-
+        // 在canvas上获取按键
         this.controller = new Controller(this.$canvas);
     }
 

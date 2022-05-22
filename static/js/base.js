@@ -15,7 +15,6 @@ class KOF {
                 y: 0,
                 height: 200,
                 width: 120,
-                color: 'blue',
             }),
             new Kyo(this, {
                 id: 1,
@@ -23,7 +22,6 @@ class KOF {
                 y: 0,
                 height: 200,
                 width: 120,
-                color: 'green',
             })
         ];
     }
