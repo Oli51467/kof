@@ -35,6 +35,8 @@ class Player extends GameObject {
         this.current_frame_cnt = 0;
         // 血量
         this.hp = 100;
+        // js控制攻击时血条的百分比缩减
+        this.$hp = this.root.$kof.find(`.kof-head-hp-${this.id}>div`);
     }
 
     start() {
@@ -92,6 +94,10 @@ class Player extends GameObject {
         this.status = 5;
         this.current_frame_cnt = 0;
         this.hp = Math.max(this.hp - 10, 0);
+        // 按照父元素的宽度改变血量 animate:渐变式改变
+        this.$hp.animate({
+            width: this.$hp.parent().width() * this.hp / 100
+        }, 'fast');
         
         if (this.hp <= 0) {
             this.status = 6;
