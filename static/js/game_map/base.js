@@ -15,6 +15,13 @@ class GameMap extends GameObject {
         this.root.$kof.append(this.$canvas);
         // 在canvas上获取按键
         this.controller = new Controller(this.$canvas);
+
+        // 在div上布局血条和计时器
+        this.root.$kof.append($(`<div class="kof-head">
+        <div class="kof-head-hp-0"><div></div></div>
+        <div class="kof-head-timer">60</div>
+        <div class="kof-head-hp-1"><div></div></div>
+        </div>`));
     }
 
     start() {   // 初始时执行一次
