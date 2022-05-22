@@ -8,7 +8,7 @@ class GameMap extends GameObject {
 
         this.root = root;
         // 设置画布
-        this.$canvas = $('<canvas width="1280" height="720" tabindex="0"></canvas>');
+        this.$canvas = $('<canvas width="1280" height="720" tabindex="0" autofocus="autofocus"></canvas>');
         // 取出canvas并设置为2d画布
         this.ctx = this.$canvas[0].getContext('2d');
         // 在div上添加画布

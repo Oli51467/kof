@@ -33,6 +33,8 @@ class Player extends GameObject {
         this.animations = new Map();
         // 记录当前渲染了多少帧
         this.current_frame_cnt = 0;
+        // 血量
+        this.hp = 100;
     }
 
     start() {
@@ -43,13 +45,75 @@ class Player extends GameObject {
         this.update_direction();    // 改变方向
         this.update_control();      // 控制移动
         this.update_move();         // 初始时下降
+        this.update_attack();       // 判定攻击
         this.render();              // 渲染
     }
 
+    update_attack() {
+        if (this.status === 4 && this.current_frame_cnt === 18) {
+            let me = this, you = this.root.players[1 - this.id];
+            let r1;
+            // 特判是哪边的玩家 找攻击臂的位置
+            if (this.direction > 0) {
+                r1 = {
+                    x1: me.x + 120,
+                    y1: me.y + 40,
+                    x2: me.x + 120 + 100,
+                    y2: me.y + 40 + 20,
+                }
+            }
+            else {
+                r1 = {
+                    x1: me.x + me.width - 220,
+                    y1: me.y + 40,
+                    x2: me.x + me.width - 220 + 100,
+                    y2: me.y + 40 + 20,
+                }
+            }
+            // 对方的矩形
+            let r2 = {
+                x1: you.x,
+                y1: you.y,
+                x2: you.x + you.width,
+                y2: you.y + you.height
+            }
+            // 若攻击到
+            if(this.is_collision(r1, r2)) {
+                you.is_attacked();
+                you.x += 60;
+            }
+        }
+    }
+
+    // 角色被攻击
+    is_attacked() {
+        // 若已死亡，则不会再收到攻击
+        if (this.status === 6) return;
+        this.status = 5;
+        this.current_frame_cnt = 0;
+        this.hp = Math.max(this.hp - 10, 0);
+        
+        if (this.hp <= 0) {
+            this.status = 6;
+        }
+    }
+
+    // 判断两个矩形是否有交集
+    is_collision(r1, r2) {
+        if (Math.max(r1.x1, r2.x1) > Math.min(r1.x2, r2.x2)) {
+            return false;
+        }
+        if (Math.max(r1.y1, r2.y1) > Math.min(r1.y2, r2.y2)) {
+            return false;
+        }
+        return true;
+    }
     /* 1. 改变第二角色位置 
        2.当角色位置变换到另一边时 自动改变坐标系 
     */
     update_direction() {
+        // 若玩家已死亡 则不改变坐标位置
+        if (this.status === 6) return;
         // 由root取出两名玩家的info
         let players = this.root.players;
         if (players[0] && players[1]) {
@@ -117,9 +181,7 @@ class Player extends GameObject {
 
     // 初始时从高处跳下
     update_move() {
-        if (this.status === 3) {
-            this.vy += this.gravity;
-        }
+        this.vy += this.gravity;
         
         this.x += this.vx * this.timedelta / 1000;
         this.y += this.vy * this.timedelta / 1000;
@@ -136,6 +198,22 @@ class Player extends GameObject {
     }
 
     render() {
+        /* 攻击范围的圆柱体调试
+
+        this.ctx.fillStyle = 'blue';
+        this.ctx.fillRect(this.x, this.y, this.width, this.height);
+
+        // 获取拳头的位置及攻击范围
+        if (this.direction > 0) {
+            this.ctx.fillStyle = 'red';
+            this.ctx.fillRect(this.x + 120, this.y + 40, 100, 20);
+        }
+        else {
+            this.ctx.fillStyle = 'red';
+            this.ctx.fillRect(this.x - 220 + this.width, this.y + 40, 100, 20);
+        }
+        */
+
         // 先获取当前角色的状态
         let status = this.status;
 
@@ -145,8 +223,7 @@ class Player extends GameObject {
             // 获取帧数 循环渲染 除以frame_rate的原因是每秒帧率太快 使其减速
             let k;
             if (this.direction > 0) {
-                if (this.id == 0) k = parseInt(this.current_frame_cnt / 2) % gifObj.frame_cnt;
-                else k = parseInt(this.current_frame_cnt / gifObj.frame_rate) % gifObj.frame_cnt;
+                k = parseInt(this.current_frame_cnt / gifObj.frame_rate) % gifObj.frame_cnt;
                 let image = gifObj.gif.frames[k].image;
                 this.ctx.drawImage(image, this.x, this.y + gifObj.offset_y, image.width * gifObj.scale, image.height * gifObj.scale);
             }
@@ -167,9 +244,17 @@ class Player extends GameObject {
         // 继续渲染下一帧
         this.current_frame_cnt ++;
 
-        // 攻击时，只渲染一次。当渲染完全部帧时，更新角色状态为静止
-        if (this.status === 4 && parseInt(this.current_frame_cnt / gifObj.frame_rate) === gifObj.frame_cnt) {
-            this.status = 0;
+        // 攻击、被攻击、死亡时，只渲染一次。当渲染完全部帧时，更新角色状态为静止
+        if (this.status === 4 || this.status === 5 || this.status === 6) {
+            if (parseInt(this.current_frame_cnt / gifObj.frame_rate) === gifObj.frame_cnt) {
+                // 若已死亡，则倒地不起。不再渲染帧
+                if (this.status === 6) {
+                    this.current_frame_cnt --;
+                }
+                else {
+                    this.status = 0;
+                }
+            }
         }
     }
 }
