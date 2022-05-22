@@ -37,6 +37,7 @@ class Player extends GameObject {
         this.hp = 100;
         // js控制攻击时血条的百分比缩减
         this.$hp = this.root.$kof.find(`.kof-head-hp-${this.id}>div`);
+        this.$hp_inner = this.$hp.find(`div`);
     }
 
     start() {
@@ -90,17 +91,44 @@ class Player extends GameObject {
     // 角色被攻击
     is_attacked() {
         // 若已死亡，则不会再收到攻击
-        if (this.status === 6) return;
+        if (this.status === 6) {
+            this.hp = 0;
+            this.$hp_inner.animate({
+                width: this.$hp.parent().width() * this.hp / 100
+            }, 200);
+            this.$hp.animate({
+                width: this.$hp.parent().width() * this.hp / 100
+            }, 220);
+            return;
+        }
         this.status = 5;
         this.current_frame_cnt = 0;
-        this.hp = Math.max(this.hp - 10, 0);
-        // 按照父元素的宽度改变血量 animate:渐变式改变
-        this.$hp.animate({
-            width: this.$hp.parent().width() * this.hp / 100
-        }, 'fast');
+        // 百分之10%暴击
+        if (Math.random() <= 0.1) {
+            this.hp = Math.max(this.hp - 50, 0);
+            // 按照父元素的宽度改变血量 animate:渐变式改变
+            this.$hp_inner.animate({
+                width: this.$hp.parent().width() * this.hp / 100
+            }, 200);
+            this.$hp.animate({
+                width: this.$hp.parent().width() * this.hp / 100
+            }, 220);
+        }
+        else {
+            this.hp = Math.max(this.hp - 10, 0);
+            // 按照父元素的宽度改变血量 animate:渐变式改变
+            this.$hp_inner.animate({
+                width: this.$hp.parent().width() * this.hp / 100
+            }, 720);
+            this.$hp.animate({
+                width: this.$hp.parent().width() * this.hp / 100
+            }, 800);
+        }
         
         if (this.hp <= 0) {
             this.status = 6;
+            this.current_frame_cnt = 0;
+            this.vx = 0;
         }
     }
 

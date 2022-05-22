@@ -18,10 +18,14 @@ class GameMap extends GameObject {
 
         // 在div上布局血条和计时器
         this.root.$kof.append($(`<div class="kof-head">
-        <div class="kof-head-hp-0"><div></div></div>
+        <div class="kof-head-hp-0"><div><div></div></div></div>
         <div class="kof-head-timer">60</div>
-        <div class="kof-head-hp-1"><div></div></div>
+        <div class="kof-head-hp-1"><div><div></div></div></div>
         </div>`));
+
+        // 设置计时器
+        this.time_left = 60000;
+        this.$timer = this.root.$kof.find(`.kof-head-timer`);
     }
 
     start() {   // 初始时执行一次
@@ -29,6 +33,20 @@ class GameMap extends GameObject {
     }
 
     update() {  // 每一帧都执行一次
+        this.time_left -= this.timedelta;
+        if (this.time_left <= 0) {
+            this.time_left = 0;
+            let [a, b] = this.root.players;
+            if (a.status != 6 && b.status != 6) {
+                a.status = b.status = 6;
+                a.current_frame_cnt = b.current_frame_cnt = 0;
+                a.vx = b.vx = 0;
+                a.is_attacked();
+                b.is_attacked();
+            }
+        }
+        // 将剩余的时间用test方法显示在div上
+        this.$timer.text(parseInt(this.time_left / 1000));
         this.render();
     }
 

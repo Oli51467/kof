@@ -3,7 +3,7 @@ let GAME_OBJECT = [];
 class GameObject {
     constructor() {
         GAME_OBJECT.push(this);
-        this.timedelta = 0; // 相邻两帧的时间间隔
+        this.timedelta = 0; // 相邻两帧间的时间间隔
         this.has_call_start = false;
     }
 
